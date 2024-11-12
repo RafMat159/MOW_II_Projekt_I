@@ -1,0 +1,371 @@
+\documentclass[10pt,letterpaper]{article}
+
+\usepackage[utf8]{inputenc}
+%\usepackage[polish]{babel}
+\usepackage[T1]{fontenc}
+\usepackage{booktabs}
+\usepackage{graphicx}
+\usepackage{float}
+\usepackage{placeins}
+\PassOptionsToPackage{hyphens}{url}
+\usepackage{listings}
+\usepackage{color}
+\lstloadlanguages{TeX}
+\lstset{
+	literate={ą}{{\k{a}}}1
+           {ć}{{\'c}}1
+           {ę}{{\k{e}}}1
+           {ó}{{\'o}}1
+           {ń}{{\'n}}1
+           {ł}{{\l{}}}1
+           {ś}{{\'s}}1
+           {ź}{{\'z}}1
+           {ż}{{\.z}}1
+           {Ą}{{\k{A}}}1
+           {Ć}{{\'C}}1
+           {Ę}{{\k{E}}}1
+           {Ó}{{\'O}}1
+           {Ń}{{\'N}}1
+           {Ł}{{\L{}}}1
+           {Ś}{{\'S}}1
+           {Ź}{{\'Z}}1
+           {Ż}{{\.Z}}1,
+	basicstyle=\footnotesize\ttfamily,
+}
+\usepackage{epsfig}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage[left=1.5cm, right=1.5cm, top=2cm, bottom=2cm]{geometry}
+
+
+% Include other packages here, before hyperref.
+
+\usepackage[breaklinks=true,bookmarks=false]{hyperref}
+
+\setcounter{page}{1}
+\begin{document}
+
+%%%%%%%%% TITLE
+\title{Analiza i prognozowanie cen samochodów używanych na aukcjach z wykorzystaniem regresji}
+
+\author{Zuzanna Jużyniec\\
+{\tt\small zuzanna.juzyniec@pk.edu.pl}
+\and
+Rafał Matusiak\\
+{\tt\small rafal.matusiak@pk.edu.pl}
+}
+\maketitle
+%\thispagestyle{empty}
+
+\section{Abstract}
+\section{Wprowadzenie}
+\section{Zbiór danych}
+Zbiór danych został pobrany ze strony \url{https://www.kaggle.com/datasets/tunguz/used-car-auction-prices?resource=download} i zawiera historyczne ceny sprzedaży samochodów na aukcjach, zebrane z zewnętrznych źródeł internetowych. Został zebrany w 2015 roku i nie był już aktualizowany.
+
+Zbiór danych zawiera następujące kolumny:
+\begin{itemize}
+\item year - rok produkcji pojazdu;
+\item make - marka pojazdu (np. Toyota, Ford);
+\item model - model pojazdu (np. Corolla, Mustang);
+\item trim - wersja wyposażenia pojazdu (np. SE, Base);
+\item body - rodzaj nadwozia pojazdu (np. sedan, SUV);
+\item transmission - rodzaj skrzyni biegów (np. automatyczna, manualna);
+\item vin - numer identyfikacyjny pojazdu (VIN);
+\item state - stan (lokalizacja geograficzna) w USA, gdzie odbyła się sprzedaż;
+\item condition - stan pojazdu oceniany w skali od 1 do 5, gdzie wyższe wartości oznaczają lepszy \item stan techniczny (zmienna ciągła);
+\item odometer - przebieg pojazdu w milach;
+\item color - kolor karoserii pojazdu;
+\item interior - kolor wnętrza pojazdu;
+\item seller - nazwa lub identyfikator sprzedającego pojazd;
+\item mmr - wartość pojazdu według Manheim Market Report (MMR), używana jako wskaźnik wartości rynkowej;
+\item sellingprice - rzeczywista cena sprzedaży pojazdu na aukcji;
+\item saledate - data sprzedaży pojazdu.
+\end{itemize}
+
+W celu poznania danych zostało wykonane wiele wykresów.
+\subsection{Wykres procentowej ilości brakujących wartości}
+\begin{figure}[H]
+\begin{center}
+   \includegraphics[width=0.7\linewidth]{figures/brakujace.png}
+\caption{Histogramy zmiennych numerycznych.}
+   \label{fig:other-figure}
+\end{center}
+\end{figure}
+Jak widać wartości NaN występują w 9 kolumnach, najwięcej w zmiennej 'transmission'.
+
+\subsection{Histogramy}
+
+Jak widać na Rys. 1, niektóre zmienne, takie jak sellingprice, mmr oraz odometer, charakteryzują się rozkładem długoogonowym, co oznacza, że większość wartości koncentruje się w niższych przedziałach, jednak sporadycznie występują bardzo wysokie wartości odstające. Taki rozkład sugeruje, że typowe ceny sprzedaży, wartości rynkowe oraz przebiegi są zazwyczaj niskie, choć zdarzają się pojazdy o wyjątkowo wysokich cenach i dużym przebiegu. 
+
+Aby lepiej zobrazować te rozkłady, zastosowano przekształcenie logarytmiczne, co przedstawiono na Rys. 2 — po tej transformacji rozkłady stały się bardziej symetryczne i zbliżone do normalnego, co ułatwiło ich interpretację. Zmienna condition ma bardziej równomierny rozkład, wskazując na stabilny stan techniczny większości pojazdów, natomiast year wykazuje tendencję przesunięcia ku nowszym rocznikom, co sugeruje, że na aukcjach dominują młodsze samochody. Podczas dalszej analizy wyniknie, czy takie przekształcenie będzie konieczne w procesie modelowania, aby poprawić wyniki prognozowania, jednak na tym etapie pozostajemy przy badaniu oryginalnych danych.
+
+\begin{figure}[H]
+\begin{center}
+   \includegraphics[width=0.7\linewidth]{figures/histogramy.png}
+\caption{Histogramy zmiennych numerycznych.}
+   \label{fig:other-figure}
+\end{center}
+\end{figure}
+
+\begin{figure}[H]
+\begin{center}
+   \includegraphics[width=0.7\linewidth]{figures/histogramy_log.png}
+   \caption{Histogramy zmiennych numerycznych po przekształceniu logarytmicznym.}
+   \label{fig:other-figure-log}
+\end{center}
+\end{figure}
+
+\subsection{Boxploty}
+\begin{figure}[H]
+\begin{center}
+   \includegraphics[width=0.7\linewidth]{figures/boxplot_wszystko.png}
+   \caption{Boxploty dla wszystkich zmiennych numerycznych.}
+   \label{fig:other-figure-log}
+\end{center}
+\end{figure}
+Na powyższym wykresie (Rys. 4) przedstawiono boxploty dla zmiennych numerycznych, jednak ze względu na dużą różnicę w wartościach pomiędzy zmiennymi, szczegóły niektórych cech są trudne do dostrzeżenia. Aby lepiej zobrazować rozkład wartości, w tym wartości odstające, zostaną przedstawione oddzielne boxploty dla każdej z cech numerycznych. Dodatkowo, wykresy te zostaną wygenerowane zarówno z uwzględnieniem danych odstających, jak i bez nich, aby zapewnić pełniejszą analizę danych.
+
+\begin{figure}[H]
+\begin{center}
+   \includegraphics[width=0.7\linewidth]{figures/boxplot_sellingprice.png}
+   \caption{Boxploty dla zmiennej 'sellingprice'.}
+   \label{fig:other-figure-log}
+\end{center}
+\end{figure}
+
+\begin{figure}[H]
+\begin{center}
+   \includegraphics[width=0.7\linewidth]{figures/boxplot_odometer.png}
+   \caption{Boxploty dla zmiennej 'odometer'.}
+   \label{fig:other-figure-log}
+\end{center}
+\end{figure}
+
+\begin{figure}[H]
+\begin{center}
+   \includegraphics[width=0.7\linewidth]{figures/boxplot_mmr.png}
+   \caption{Boxploty dla zmiennej 'mmr'.}
+   \label{fig:other-figure-log}
+\end{center}
+\end{figure}
+
+\begin{figure}[H]
+\begin{center}
+   \includegraphics[width=0.7\linewidth]{figures/boxplot_condition.png}
+   \caption{Boxploty dla zmiennej 'condition'.}
+   \label{fig:other-figure-log}
+\end{center}
+\end{figure}
+
+\begin{figure}[H]
+\begin{center}
+   \includegraphics[width=0.7\linewidth]{figures/boxplot_year.png}
+   \caption{Boxploty dla zmiennej 'year'.}
+   \label{fig:other-figure-log}
+\end{center}
+\end{figure}
+
+Wartości odstające mają największy wpływ na zmienne takie jak cena sprzedaży (sellingprice), przebieg (odometer) i wartość rynkowa (mmr), które charakteryzują się nielicznymi, ale bardzo skrajnymi wartościami odstającymi. Po ich usunięciu uzyskujemy bardziej klarowny obraz typowego rozkładu danych, co pozwala lepiej zrozumieć, jakie są rzeczywiste wartości dominujące w zbiorze danych.
+
+W przypadku zmiennych rok produkcji (year) i stan techniczny (condition), wartości odstające mają mniejszy wpływ. Boxplot dla stanu technicznego jest bardzo jednorodny, co wskazuje, że ta zmienna nie zawiera wielu ekstremalnych wartości, a typowy stan techniczny pojazdów waha się od 2.5 do 4.5.
+
+\subsection{Pairplot}
+\begin{figure}[H]
+\begin{center}
+   \includegraphics[width=0.7\linewidth]{figures/pairplot.png}
+   \caption{Pairplot.}
+   \label{fig:other-figure-log}
+\end{center}
+\end{figure}
+Patrząc na pairplot, widzimy wyraźne zależności między niektórymi zmiennymi (np. cena sprzedaży a rok produkcji, przebieg czy wartość rynkowa). Aby lepiej zrozumieć, jak silne są te zależności, warto obliczyć współczynniki korelacji dla tych zmiennych. Pozwoli to na dokładniejszą ocenę siły tych relacji.
+
+\subsection{Macierz korelacji}
+\begin{figure}[H]
+\begin{center}
+   \includegraphics[width=0.7\linewidth]{figures/korelacja.png}
+   \caption{Macierz korelacji.}
+   \label{fig:other-figure-log}
+\end{center}
+\end{figure}
+Rok produkcji (year) ma silną dodatnią korelację z ceną sprzedaży (0.59), co oznacza, że nowsze samochody zazwyczaj sprzedają się za wyższą cenę. Stan techniczny (condition) ma dodatnią korelację z ceną sprzedaży (0.54), co sugeruje, że samochody w lepszym stanie są droższe. Przebieg (odometer) wykazuje silną ujemną korelację z ceną sprzedaży (-0.58), co oznacza, że większy przebieg zmniejsza wartość samochodu. MMR (wartość rynkowa) ma bardzo silną dodatnią korelację z ceną sprzedaży (0.98), co wskazuje, że wartość rynkowa samochodu dobrze prognozuje jego cenę na aukcji.
+
+\subsection{Wykres sprzedaży samochodów - Cena, Przebieg i Stan pojazdu dla 1000 losowych próbek}
+\begin{figure}[H]
+\begin{center}
+   \includegraphics[width=0.7\linewidth]{figures/sprzedaz_samochodow.png}
+   \caption{Wykres sprzedaży samochodów.}
+   \label{fig:other-figure-log}
+\end{center}
+\end{figure}
+Na powyższym wykresie zbadano zależność między przebiegiem pojazdów a ceną sprzedaży, uwzględniając jednocześnie ich stan techniczny. Zauważalna jest silna ujemna zależność – samochody z większym przebiegiem są zazwyczaj tańsze. Lepszy stan techniczny pojazdu wpływa pozytywnie na cenę sprzedaży, co pozwala niektórym pojazdom osiągnąć wyższe ceny, nawet przy relatywnie dużym przebiegu. Najwyższe ceny uzyskują samochody w najlepszym stanie, podczas gdy pojazdy w najgorszym stanie sprzedają się za niższe kwoty, niezależnie od przebiegu.
+
+\subsection{Wykres sprzedaży samochodów - Cena, Przebieg i Rok produkcji pojazdu dla 1000 losowych próbek}
+\begin{figure}[H]
+\begin{center}
+   \includegraphics[width=0.7\linewidth]{figures/sprzedaz_samochodow_cena_przebieg_rok.png}
+   \caption{Wykres sprzedaży samochodów.}
+   \label{fig:other-figure-log}
+\end{center}
+\end{figure}
+Wykres przedstawia zależność między rokiem produkcji a ceną sprzedaży samochodów, uwzględniając jednocześnie ich przebieg. Zauważalna jest wyraźna tendencja – nowsze samochody (z lat 2010–2015) osiągają wyższe ceny, podczas gdy starsze pojazdy (sprzed 2005 roku) sprzedają się za znacznie niższe kwoty. Przebieg również ma istotny wpływ – samochody z mniejszym przebiegiem mają tendencję do wyższych cen, zwłaszcza w przypadku nowszych roczników. Samochody z większym przebiegiem, niezależnie od roku produkcji, zazwyczaj mają niższą wartość.
+
+\subsection{Liczba sprzedanych pojazdów w poszczególnych stanach USA}
+\begin{figure}[H]
+\begin{center}
+   \includegraphics[width=0.7\linewidth]{figures/liczba_sprzedanych_pojazdow_w_poszcegolnych_stanach.png}
+   \caption{Liczba sprzedanych pojazdów w poszczególnych stanach USA.}
+   \label{fig:other-figure-log}
+\end{center}
+\end{figure}
+Największą liczbę sprzedanych pojazdów odnotowano w stanach Floryda (FL) oraz Kalifornia (CA). Te dwa stany zdecydowanie wyróżnią się jako liderzy. W czołówce są także Teksas (TX), Pensylwania (PA) oraz Georgia (GA).
+
+\subsection{Top 10 najczęściej sprzedawanych marek samochodów}
+\begin{figure}[H]
+\begin{center}
+   \includegraphics[width=0.7\linewidth]{figures/liczba_sprzedanych_pojazdow_marka.png}
+   \caption{Top 10 najczęściej sprzedawanych marek samochodów}
+   \label{fig:other-figure-log}
+\end{center}
+\end{figure}
+Ford zdecydowanie dominuje jako najczęściej sprzedawana marka, z wyraźną przewagą nad Chevroletem oraz Nissanem. Toyota oraz Dodge zamykają czołową piątkę. Wynik ten może odzwierciedlać popularność tych marek na rynku amerykańskim, gdzie dominują pojazdy amerykańskie i azjatyckie.
+
+\subsection{Liczba sprzedanych pojazdów według roku produkcji}
+\begin{figure}[H]
+\begin{center}
+   \includegraphics[width=0.7\linewidth]{figures/liczba_sprzedanych_pojazdow_rok.png}
+   \caption{Liczba sprzedanych pojazdów według roku produkcji}
+   \label{fig:other-figure-log}
+\end{center}
+\end{figure}
+Największa liczba sprzedanych pojazdów pochodzi z lat 2011-2014, co sugeruje, że rynek używanych samochodów obejmuje głównie nowsze modele, które mają jeszcze sporo lat eksploatacji przed sobą. Starsze roczniki, szczególnie te sprzed 2000 roku, są rzadziej spotykane, co jest zgodne z trendem zmniejszania się podaży starszych aut.
+
+\subsection{Top 10 najlepiej sprzedających się typów nadwozia}
+\begin{figure}[H]
+\begin{center}
+   \includegraphics[width=0.7\linewidth]{figures/typ_nadwozia.png}
+   \caption{Top 10 najlepiej sprzedających się typów nadwozia}
+   \label{fig:other-figure-log}
+\end{center}
+\end{figure}
+Sedan jest zdecydowanie najpopularniejszym typem nadwozia, z liczbą sprzedanych egzemplarzy wyraźnie przewyższającą inne typy. SUV zajmuje drugie miejsce, co świadczy o rosnącej popularności pojazdów tego segmentu. Inne typy nadwozia, takie jak hatchback czy minivan, również znajdują się w czołówce, ale z mniejszą liczbą sprzedanych egzemplarzy.
+
+\subsection{Top 10 kolorów z największą liczbą sprzedanych pojazdów}
+\begin{figure}[H]
+\begin{center}
+   \includegraphics[width=0.7\linewidth]{figures/top_kolor_sprzedaz.png}
+   \caption{Top 10 kolorów z największą liczbą sprzedanych pojazdów}
+   \label{fig:other-figure-log}
+\end{center}
+\end{figure}
+Kolory takie jak czarny, biały i srebrny są najczęściej wybierane przez nabywców, co nie jest zaskoczeniem, biorąc pod uwagę ich popularność na rynku. Są to kolory neutralne, które zazwyczaj lepiej utrzymują swoją wartość na rynku wtórnym. Inne kolory, takie jak niebieski i czerwony, również znajdują się w top 10, ale w mniejszych ilościach.
+
+\section{Przegląd literatury}
+Zbiór nie był wykorzystywany w publikacjach. Dostepne jest kilka notatników z przykładowymi podejścami do problemu. 
+\begin{itemize}
+    \item Notatnik Kaggle autorstwa Zabihullaha18 dotyczy predykcji cen samochodów za pomocą uczenia maszynowego. Zawiera kroki takie jak wstępne przetwarzanie danych, wybór cech i trenowanie modeli. Używa algorytmu regresji liniowej do przewidywania cen na podstawie danych o samochodach (np. marka, model, przebieg). Wyniki są oceniane przy użyciu wskaźników takich jak błąd średniokwadratowy, który pozwala mierzyć dokładność prognoz. Pelen notatnik dostępny jest pod adresem: \url{https://www.kaggle.com/code/zabihullah18/car-price-prediction#--5)-Train-the-Model-}
+    \item Notatnik na Kaggle dotyczący predykcji cen używanych samochodów autorstwa Midoel3ila wykorzystuje techniki uczenia maszynowego do przewidywania cen samochodów na podstawie ich cech. Proces obejmuje wstępne przetwarzanie danych, eksplorację cech takich jak marka, model, przebieg i wiek pojazdu, a następnie budowanie modeli predykcyjnych. Algorytmy takie jak regresja liniowa i lasy losowe są stosowane do trenowania modelu. Notatnik ocenia dokładność przewidywań za pomocą miar takich jak błąd średniokwadratowy. Pelen notatnik dostępny jest pod adresem: \url{https://www.kaggle.com/code/midoel3ila/car-used-priced-prediction-using-ml}  
+\end{itemize}
+
+\section{Motywacja}
+Projekt dotyczący prognozowania cen samochodów używanych jest interesujący, ponieważ może przynieść korzyści zarówno kupującym, jak i sprzedającym, pomagając przewidzieć realistyczne ceny rynkowe. W społeczeństwie, gdzie kupno używanych pojazdów jest powszechne, dokładne modele predykcyjne mogą wspierać transparentność i zaufanie w transakcjach. W przemyśle, takie prognozy mogą być użyteczne dla wypożyczalni samochodów, dealerów oraz platform aukcyjnych, pomagając w lepszym oszacowaniu wartości pojazdów i optymalizacji strategii sprzedaży.
+
+\section{Ewaluacja}
+Oczekiwany model będzie w stanie dokładnie przewidzieć ceny samochodów używanych na aukcjach na podstawie dostępnych danych. Satysfakcjonujący wynik to taki, w którym błąd predykcji (np. błąd średniokwadratowy) będzie niski, co oznacza, że przewidywane ceny są bliskie rzeczywistym cenom sprzedaży. Osiągniety wynik, powinien być wystarczająco precyzyjny, aby umożliwić zastosowanie modelu w rzeczywistych warunkach — np. na platformach aukcyjnych lub w firmach dealerskich — gdzie może pomóc w wycenie pojazdów. Oczywiście projekt ma charakter wyłącznie edukacyjny i nie jest przeznaczony do komercyjnego wykorzystania ani sprzedaży. Celem jest nauka i zrozumienie metod prognozowania cen samochodów używanych z wykorzystaniem modeli uczenia maszynowego. Chociaż dążymy do uzyskania dokładnych wyników, system ten nie będzie wdrażany w żadnym rzeczywistym środowisku komercyjnym. Skupiamy się na poszerzaniu wiedzy i umiejętności w zakresie analizy danych oraz budowania modeli predykcyjnych.
+
+\section{Zasoby}
+W projekcie zostanie wykorzystany język programowania Python oraz środowisko Jupyter Notebook do analizy danych i budowy modeli predykcyjnych. Python oferuje bogaty zestaw bibliotek do uczenia maszynowego, takich jak scikit-learn do budowy i oceny modeli, pandas do manipulacji danymi, oraz numpy do obliczeń numerycznych. Dodatkowo, zosatnie wykorzystana biblioteka matplotlib i seaborn do wizualizacji danych, co pozwoli na lepsze zrozumienie zależności i wzorców w zebranych informacjach.
+
+\section{Zastosowane metody}
+\section{Eksperyment}
+\subsection{Preprocessing}
+
+W celu przygotowania danych do modelowania i analizy predykcyjnej, przeprowadzono zaawansowany preprocessing, który obejmował różne etapy mające na celu poprawienie jakości i spójności zbioru danych. Szczegółowe kroki opisano poniżej.
+
+\paragraph{1. Obliczenie wieku samochodu (\texttt{car\_age})}
+Wiek samochodu w momencie sprzedaży został obliczony na podstawie kolumny \texttt{saledate} poprzez odjęcie od roku sprzedaży (\texttt{sale\_year}) roku produkcji pojazdu (\texttt{year}). Dodatkowo, z tej samej kolumny (\texttt{saledate}) wyodrębniono dodatkowe cechy, takie jak:
+\begin{itemize}
+    \item \textbf{Miesiąc sprzedaży} (\texttt{sale\_month}),
+    \item \textbf{Rok sprzedaży} (\texttt{sale\_year}),
+    \item \textbf{Godzina sprzedaży} (\texttt{sale\_hour}),
+    \item \textbf{Minuta sprzedaży} (\texttt{sale\_minute}).
+\end{itemize}
+
+Po tej transformacji przeanalizowano sprzedaż samochodów w różnych miesiącach i dniach tygodnia. Wyniki wskazują, że najwięcej sprzedaży miało miejsce w styczniu (140,815 samochodów) oraz lutym (163,054 samochody). Z kolei analiza sprzedaży według dnia tygodnia wykazała, że transakcje najczęściej odbywają się na początku tygodnia, zwłaszcza we wtorki (180,158 sprzedaży), natomiast najmniej w niedziele (11,868 sprzedaży).
+
+Podczas analizy wieku pojazdów wykryto, że 201 rekordów miało ujemne wartości w kolumnie \texttt{car\_age}. Można zatem założyć, że taka liczba samochodów została zakupiona w przedsprzedaży.
+
+\paragraph{2. Ekstrakcja informacji z numeru VIN}
+Z numeru VIN pojazdu przy użyciu biblioteki \texttt{vininfo} wyodrębniono informacje o kraju produkcji (\texttt{vin\_country}). Na tym etapie zrezygnowano z pozyskiwania dodatkowych danych, takich jak typ pojazdu, ponieważ były one już zawarte w innych kolumnach (\texttt{model}, \texttt{body}). Po wyodrębnieniu kraju, kolumna \texttt{vin} została usunięta, gdyż nie była już potrzebna do dalszej analizy.
+
+\paragraph{3. Usunięcie wartości odstających}
+W celu usunięcia wartości odstających przeprowadzono analizę cech numerycznych (\texttt{year}, \texttt{condition}, \texttt{odometer}, \texttt{mmr}, \texttt{sellingprice}) za pomocą metody IQR (Interquartile Range). Wartości spoza zakresu $[Q1 - 1.5 * IQR, Q3 + 1.5 * IQR]$ zostały usunięte. Łącznie usunięto około 8.3\% danych, co było akceptowalne, ponieważ nie przekraczało 10\% zbioru.
+
+\paragraph{4. Przekształcenie zmiennych kategorycznych na wartości liczbowe}
+Wszystkie zmienne kategoryczne (\texttt{make}, \texttt{model}, \texttt{trim}, \texttt{body}, \texttt{transmission}, \texttt{state}, \texttt{color}, \texttt{interior}, \texttt{seller}, \texttt{vin\_country}) zostały przekonwertowane na wartości liczbowe. Dla kolumny \texttt{transmission} zastosowano kodowanie binarne: \texttt{0} dla manualnej skrzyni biegów oraz \texttt{1} dla automatycznej.
+
+\paragraph{5. Sprawdzenie brakujących wartości}
+Po zakończeniu wcześniejszych kroków przeanalizowano brakujące wartości w każdej z kolumn. Wyniki prezentowały się następująco:
+
+\begin{verbatim}
+year             0.000000%
+make             1.843378%
+model            1.860915%
+trim             1.906011%
+body             2.361263%
+transmission    11.695010%
+state            0.000000%
+condition        2.110553%
+odometer         0.016821%
+color            0.134035%
+interior         0.134035%
+seller           0.000000%
+mmr              0.000000%
+sellingprice     0.000000%
+car_age          0.000000%
+sale_year        0.000000%
+sale_month       0.000000%
+sale_hour        0.000000%
+sale_minute      0.000000%
+sale_weekday     0.000000%
+vin_country      0.000000%
+\end{verbatim}
+
+\paragraph{6. Uzupełnianie brakujących wartości}
+Do imputacji brakujących danych zastosowano trzy metody:
+\begin{itemize}
+    \item Średnia dla danych numerycznych oraz moda dla danych kategorycznych.
+    \item Mediana dla danych numerycznych oraz moda dla danych kategorycznych.
+    \item Imputacja metodą k-Nearest Neighbors (\texttt{KNNImputer}) z 3 sąsiadami.
+\end{itemize}
+
+\paragraph{7. Skalowanie i standaryzacja danych}
+W celu ujednolicenia wartości numerycznych zastosowano dwa podejścia:
+\begin{itemize}
+    \item Skalowanie Min-Max w zakresie $[0, 1]$
+    \item Standaryzacja do średniej 0 i odchylenia standardowego 1
+\end{itemize}
+Dla każdego z trzech zbiorów (imputacja średnią, medianą, KNN) zastosowano skalowanie i standaryzację, co doprowadziło do utworzenia sześciu różnych zestawów danych:
+\begin{verbatim}
+mean_min_max.csv
+median_min_max.csv
+knn_min_max.csv
+mean_standard.csv
+median_standard.csv
+knn_standard.csv
+\end{verbatim}
+
+\paragraph{8. Zapis przetworzonych danych}
+Wszystkie powyższe zbiory zostały zapisane jako pliki CSV. Zbiory te są gotowe do użycia w modelach predykcyjnych i zapewniają lepszą jakość danych, co przekłada się na większą dokładność modeli.
+
+
+
+\subsection{Trening modelu}
+- podzial na zbior treningowy i testowy recznie, nie funkcji
+\subsection{Optymalizacja}
+
+\section{Podsumowanie}
+
+\bibliographystyle{plain}
+\bibliography{bibliography.bib} 
+
+\end{document}
