@@ -301,7 +301,7 @@ Z numeru VIN pojazdu przy użyciu biblioteki \texttt{vininfo} wyodrębniono info
 W celu usunięcia wartości odstających przeprowadzono analizę cech numerycznych (\texttt{year}, \texttt{condition}, \texttt{odometer}, \texttt{mmr}, \texttt{sellingprice}) za pomocą metody IQR (Interquartile Range). Wartości spoza zakresu $[Q1 - 1.5 * IQR, Q3 + 1.5 * IQR]$ zostały usunięte. Łącznie usunięto około 8.3\% danych, co było akceptowalne, ponieważ nie przekraczało 10\% zbioru.
 
 \paragraph{4. Przekształcenie zmiennych kategorycznych na wartości liczbowe}
-Wszystkie zmienne kategoryczne (\texttt{make}, \texttt{model}, \texttt{trim}, \texttt{body}, \texttt{transmission}, \texttt{state}, \texttt{color}, \texttt{interior}, \texttt{seller}, \texttt{vin\_country}) zostały przekonwertowane na wartości liczbowe. Dla kolumny \texttt{transmission} zastosowano kodowanie binarne: \texttt{0} dla manualnej skrzyni biegów oraz \texttt{1} dla automatycznej.
+Wszystkie zmienne kategoryczne (\texttt{make}, \texttt{model}, \texttt{trim}, \texttt{body}, \texttt{transmission}, \texttt{state}, \texttt{color}, \texttt{interior}, \texttt{seller}, \texttt{vin\_country}) zostały przekonwertowane na wartości liczbowe. Dla kolumny \texttt{transmission} zastosowano kodowanie binarne: \texttt{0} dla manualnej skrzyni biegów oraz \texttt{1} dla automatycznej. Dla pozostałych kolumn zastosowano "label encoding" co w kolejnych etapach może ograniczyć możliwość wykorzystania niektórych modeli. PRzy tak duzych danych i wielu kategoriach niemożliwe było zastsowanie one-hot encodingu.
 
 \paragraph{5. Sprawdzenie brakujących wartości}
 Po zakończeniu wcześniejszych kroków przeanalizowano brakujące wartości w każdej z kolumn. Wyniki prezentowały się następująco:
@@ -360,7 +360,7 @@ Wszystkie powyższe zbiory zostały zapisane jako pliki CSV. Zbiory te są gotow
 
 
 \subsection{Trening modelu}
-- podzial na zbior treningowy i testowy recznie, nie funkcji
+
 \subsection{Optymalizacja}
 
 \section{Podsumowanie}
