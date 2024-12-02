@@ -10,6 +10,8 @@
 \PassOptionsToPackage{hyphens}{url}
 \usepackage{listings}
 \usepackage{color}
+\usepackage{pdflscape}
+\usepackage{adjustbox}
 \lstloadlanguages{TeX}
 \lstset{
 	literate={ą}{{\k{a}}}1
@@ -36,6 +38,7 @@
 \usepackage{amsmath}
 \usepackage{amssymb}
 \usepackage[left=1.5cm, right=1.5cm, top=2cm, bottom=2cm]{geometry}
+\usepackage{longtable}
 
 
 % Include other packages here, before hyperref.
@@ -49,16 +52,18 @@
 \title{Analiza i prognozowanie cen samochodów używanych na aukcjach z wykorzystaniem regresji}
 
 \author{Zuzanna Jużyniec\\
-{\tt\small zuzanna.juzyniec@pk.edu.pl}
+{\tt\small zuzanna.juzyniec@student.pk.edu.pl}
 \and
 Rafał Matusiak\\
-{\tt\small rafal.matusiak@pk.edu.pl}
+{\tt\small rafal.matusiak@student.pk.edu.pl}
 }
 \maketitle
 %\thispagestyle{empty}
 
 \section{Abstract}
 \section{Wprowadzenie}
+
+\newpage
 \section{Zbiór danych}
 Zbiór danych został pobrany ze strony \url{https://www.kaggle.com/datasets/tunguz/used-car-auction-prices?resource=download} i zawiera historyczne ceny sprzedaży samochodów na aukcjach, zebrane z zewnętrznych źródeł internetowych. Został zebrany w 2015 roku i nie był już aktualizowany.
 
@@ -357,11 +362,239 @@ knn_standard.csv
 \paragraph{8. Zapis przetworzonych danych}
 Wszystkie powyższe zbiory zostały zapisane jako pliki CSV. Zbiory te są gotowe do użycia w modelach predykcyjnych i zapewniają lepszą jakość danych, co przekłada się na większą dokładność modeli.
 
-
-
 \subsection{Trening modelu}
+\subsubsection{Podział danych na zbiory treningowe i testowe}
+Dane podzielono na zbiory treningowe i testowe w proporcji \textbf{80:20}. Proces ten zrealizowano w sposób manualny, zgodnie z zaimplementowanym algorytmem, zamiast korzystania z gotowych funkcji. Podział przebiegał według następujących kroków:
+\begin{enumerate}
+	\item Dane zostały wczytane i wymieszane przy użyciu funkcji \texttt{shuffle}, co umożliwiło losowe rozłożenie próbek, przy jednoczesnym zapewnieniu powtarzalności wyników dzięki zastosowaniu parametru \texttt{random\_state=42}.
+	\item Na podstawie zdefiniowanego indeksu, wyznaczono dwie części zbioru:
+	\begin{itemize}
+		\item Zbiór treningowy: zawierający pierwsze 80\% obserwacji,
+		\item Zbiór testowy: obejmujący pozostałe 20\%.
+	\end{itemize}
+\end{enumerate}
+Podziału dokonano niezależnie dla każdego z sześciu przetworzonych zbiorów danych:
 
+\begin{itemize}
+	\item \texttt{mean\_min\_max},
+	\item \texttt{median\_min\_max},
+	\item \texttt{knn\_min\_max},
+	\item \texttt{mean\_standard},
+	\item \texttt{median\_standard},
+	\item \texttt{knn\_standard}.
+\end{itemize}
+Każdy zbiór danych zawierał \textbf{21 cech} oraz około \textbf{409,778 obserwacji} w zbiorze treningowym i \textbf{102,445 obserwacji} w zbiorze testowym.
+
+\subsubsection{Proces treningu modeli}
+\begin{enumerate}
+	\item \textbf{Przygotowanie danych:} Zmienną objaśnianą była \texttt{sellingprice}, natomiast zmiennymi objaśniającymi pozostałe kolumny w zbiorze danych.
+	\item \textbf{Trenowanie modeli:} Modele trenowano za pomocą metody \texttt{fit()} na zbiorze treningowym, a predykcje generowano na zbiorze testowym za pomocą \texttt{predict()}.
+	\item \textbf{Ocena wyników:} Modele oceniano przy użyciu następujących metryk:
+	\begin{itemize}
+		\item \textbf{Mean Absolute Error (MAE):} średni błąd bezwzględny,
+		\item \textbf{Root Mean Square Error (RMSE):} pierwiastek z błędu średniokwadratowego,
+		\item \textbf{\(R^2\):} współczynnik determinacji,
+		\item \textbf{Mean Absolute Percentage Error (MAPE):} średni błąd względny, wyrażony w procentach.
+	\end{itemize}
+	Dodatkowo zarejestrowano czas trenowania każdego modelu.
+\end{enumerate}
+
+\newpage
+\subsubsection{Modele wykorzystane do analizy}
+W eksperymencie wykorzystano następujące modele regresji:
+\begin{itemize}
+	\item \textbf{Random Forest Regressor},
+	\item \textbf{Linear Regression},
+	\item \textbf{Histogram-based Gradient Boosting Regressor},
+	\item \textbf{XGBoost Regressor},
+	\item \textbf{CatBoost Regressor},
+	\item \textbf{Voting Regresoor} składający się z \textbf{Linear Regression}, \textbf{Histogram-based Gradient Boosting Regressor}, \textbf{Elastic Net},
+	\item \textbf{Stacking Regressor} składający się z \textbf{Linear Regression}, \textbf{Histogram-based Gradient Boosting Regressor}, \textbf{Elastic Net}.
+\end{itemize}
+Model \textbf{Support Vector Regression (SVR)} został wykluczony ze względu na problemy z wydajnością przy dużych zbiorach danych oraz trudności w przetwarzaniu zmiennych kategorycznych (po zastosowaniu \textit{label encoding}).
+W uczeniu zespołowym nie wykorzystano także algorytmu Random Forest ze względu na problemy z wydajnością.
+
+\subsubsection{Wyniki eksperymentów}
+Wyniki dla każdego modelu i zbioru danych zostały przedstawione w Tabeli~\ref{tab:results_all}.
+\begin{table}[H]
+	\centering
+\caption{Wyniki dla każdego modelu i zbioru danych.}
+\label{tab:results_all}
+\begin{tabular}{|c|l|l|c|c|c|c|c|}
+	\hline
+	\textbf{ID} & \textbf{Zbiór danych} & \textbf{Model} & \textbf{MAE} & \textbf{RMSE} & \textbf{\(R^2\)} & \textbf{MAPE} & \textbf{Czas (s)} \\ \hline
+	0 & mean\_min\_max & RandomForest & 0.026047 & 0.039195 & 0.968885 & 12.421442 & 377.814284 \\ \hline
+	1 & mean\_min\_max & LinearRegression & 0.028074 & 0.042012 & 0.964252 & 14.008762 & 0.405149 \\ \hline
+	2 & mean\_min\_max & HistGradientBoostingRegressor & 0.025588 & 0.038294 & 0.970300 & 12.207046 & 11.084602 \\ \hline
+	3 & mean\_min\_max & XGBoost & 0.024886 & 0.037412 & 0.971652 & 11.689896 & 3.698308 \\ \hline
+	4 & mean\_min\_max & CatBoost & 0.024627 & 0.036911 & 0.972407 & 11.564949 & 70.450874 \\ \hline
+	5 & mean\_min\_max & Voting Regressor & 0.065400 & 0.082988 & 0.860514 & 49.292124 & 8.702858 \\ \hline
+	6 & mean\_min\_max & Stacking Regressor & 0.025575 & 0.038244 & 0.970378 & 12.154732 & 53.870504 \\ \hline
+	7 & median\_min\_max & RandomForest & 0.026043 & 0.039188 & 0.968897 & 12.416976 & 257.189253 \\ \hline
+	8 & median\_min\_max & LinearRegression & 0.028074 & 0.042012 & 0.964252 & 14.008762 & 0.354580 \\ \hline
+	9 & median\_min\_max & HistGradientBoostingRegressor & 0.025555 & 0.038270 & 0.970337 & 12.196443 & 9.029640 \\ \hline
+	10 & median\_min\_max & XGBoost & 0.024845 & 0.037338 & 0.971763 & 11.681776 & 3.241030 \\ \hline
+	11 & median\_min\_max & CatBoost & 0.024592 & 0.036882 & 0.972450 & 11.548103 & 68.110814 \\ \hline
+	12 & median\_min\_max & Voting Regressor & 0.065387 & 0.082980 & 0.860542 & 49.283282 & 8.520290 \\ \hline
+	13 & median\_min\_max & Stacking Regressor & 0.025535 & 0.038212 & 0.970427 & 12.132452 & 50.229682 \\ \hline
+	14 & knn\_min\_max & RandomForest & 0.026032 & 0.039191 & 0.968891 & 12.420795 & 255.567970 \\ \hline
+	15 & knn\_min\_max & LinearRegression & 0.028098 & 0.042036 & 0.964211 & 14.004907 & 0.364529 \\ \hline
+	16 & knn\_min\_max & HistGradientBoostingRegressor & 0.025589 & 0.038308 & 0.970279 & 12.201167 & 10.394278 \\ \hline
+	17 & knn\_min\_max & XGBoost & 0.024855 & 0.037345 & 0.971753 & 11.641967 & 3.362012 \\ \hline
+	18 & knn\_min\_max & CatBoost & 0.024622 & 0.036968 & 0.972321 & 11.566808 & 74.796223 \\ \hline
+	19 & knn\_min\_max & Voting Regressor & 0.065349 & 0.082936 & 0.860688 & 49.191944 & 11.566812 \\ \hline
+	20 & knn\_min\_max & Stacking Regressor & 0.025573 & 0.038258 & 0.970356 & 12.151640 & 65.034105 \\ \hline
+	21 & mean\_standard & RandomForest & 0.117083 & 0.176223 & 0.968908 & 78.383993 & 260.279401 \\ \hline
+	22 & mean\_standard & LinearRegression & 0.126269 & 0.188958 & 0.964252 & 85.846146 & 0.339964 \\ \hline
+	23 & mean\_standard & HistGradientBoostingRegressor & 0.115087 & 0.172232 & 0.970300 & 78.263048 & 10.777526 \\ \hline
+	24 & mean\_standard & XGBoost & 0.111790 & 0.167926 & 0.971767 & 75.951406 & 3.118486 \\ \hline
+	25 & mean\_standard & CatBoost & 0.110740 & 0.166021 & 0.972404 & 75.029054 & 73.516604 \\ \hline
+	26 & mean\_standard & Voting Regressor & 0.220150 & 0.286456 & 0.917844 & 74.406331 & 10.642051 \\ \hline
+	27 & mean\_standard & Stacking Regressor & 0.115055 & 0.172009 & 0.970377 & 78.510305 & 59.476473 \\ \hline
+	28 & median\_standard & RandomForest & 0.117069 & 0.176152 & 0.968933 & 78.477672 & 243.033475 \\ \hline
+	29 & median\_standard & LinearRegression & 0.126269 & 0.188958 & 0.964252 & 85.846146 & 0.304093 \\ \hline
+	30 & median\_standard & HistGradientBoostingRegressor & 0.114941 & 0.172125 & 0.970337 & 78.244558 & 9.704722 \\ \hline
+	31 & median\_standard & XGBoost & 0.111745 & 0.167936 & 0.971763 & 75.989966 & 3.438448 \\ \hline
+	32 & median\_standard & CatBoost & 0.110640 & 0.166014 & 0.972406 & 74.672273 & 68.956737 \\ \hline
+	33 & median\_standard & Voting Regressor & 0.220089 & 0.286425 & 0.917862 & 74.362599 & 8.220672 \\ \hline
+	34 & median\_standard & Stacking Regressor & 0.114877 & 0.171866 & 0.970427 & 78.481290 & 51.174468 \\ \hline
+	35 & knn\_standard & RandomForest & 0.117061 & 0.176270 & 0.968891 & 78.289942 & 247.432862 \\ \hline
+	36 & knn\_standard & LinearRegression & 0.126377 & 0.189066 & 0.964211 & 85.749496 & 1.059998 \\ \hline
+	37 & knn\_standard & HistGradientBoostingRegressor & 0.115077 & 0.172158 & 0.970326 & 78.214080 & 11.462982 \\ \hline
+	38 & knn\_standard & XGBoost & 0.111789 & 0.167967 & 0.971753 & 76.288017 & 2.724514 \\ \hline
+	39 & knn\_standard & CatBoost & 0.110701 & 0.166215 & 0.972339 & 74.427258 & 49.833858 \\ \hline
+	40 & knn\_standard & Voting Regressor & 0.220160 & 0.286490 & 0.917813 & 74.165903 & 8.574647 \\ \hline
+	41 & knn\_standard & Stacking Regressor & 0.115046 & 0.172042 & 0.970355 & 78.510303 & 66.176187 \\ \hline
+\end{tabular}
+\end{table}
+
+\newpage
+Kluczowe spostrzeżenia:
+\begin{itemize}
+	\item \textbf{CatBoost} osiągnął najlepsze wyniki na większości zbiorów danych, minimalizując wartości MAE i RMSE, a także osiągając najwyższy \(R^2\).
+	\item \textbf{XGBoost} uzyskał porównywalne wyniki, ale z nieco krótszym czasem trenowania.
+	\item \textbf{Random Forest} wymagał znacznie więcej czasu obliczeniowego, co czyniło go mniej wydajnym w porównaniu do gradientowego boostingu.
+	\item \textbf{Linear Regression} była najszybsza, ale jej dokładność pozostawiała wiele do życzenia w porównaniu do bardziej zaawansowanych modeli.
+\end{itemize}
+
+\begin{table}[H]
+	\centering
+	\caption{Wyniki dla najlepszych modeli na różnych zbiorach danych.}
+	\label{tab:results}
+	\begin{tabular}{|l|l|c|c|c|c|c|}
+		\hline
+		\textbf{Zbiór danych} & \textbf{Model} & \textbf{MAE} & \textbf{RMSE} & \textbf{\(R^2\)} & \textbf{MAPE} & \textbf{Czas (s)} \\ \hline
+		median\_min\_max      & CatBoost       & 0.024592     & 0.036882      & 0.97245         & 11.548        & 68.110814            \\ \hline
+	\end{tabular}
+\end{table}
+
+\subsubsection{Porównanie wyników na wykresach}
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=0.8\textwidth]{figures/mea.png}
+	\caption{Porównanie MAE dla różnych modeli i zbiorów danych.}
+	\label{fig:mae}
+\end{figure}
+
+Na wykresie (Rys.~\ref{fig:mae}) przedstawiono wartości MAE dla wszystkich modeli na sześciu zbiorach danych. Modele \textbf{CatBoost} i \textbf{XGBoost} osiągnęły najlepsze wyniki, szczególnie na zbiorach przetworzonych za pomocą \texttt{min-max scaling}. \textbf{Voiting Regressor} uzyskała najwyższe wartości MAE, co wskazuje na jej niższą skuteczność w porównaniu do innych modeli.
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=0.8\textwidth]{figures/czasy_rozne_modele.png}
+	\caption{Czas trenowania dla różnych modeli i zbiorów danych.}
+	\label{fig:time}
+\end{figure}
+
+Na wykresie (Rys.~\ref{fig:time}) zaprezentowano czas trenowania poszczególnych modeli na różnych zbiorach danych. Modele \textbf{Linear Regression} i \textbf{XGBoost} charakteryzowały się najkrótszym czasem trenowania (zaledwie kilka sekund na zbiór danych), co czyni je wyjątkowo wydajnymi. Natomiast \textbf{Random Forest} wymagał znacznie więcej czasu obliczeniowego, co może stanowić problem w przypadku dużych zbiorów danych. Modele uczenia zespołowego także wymagały więcej czasu niż modele podstawowe. 
+
+\newpage
+\begin{landscape}
+\subsubsection{Walidacja krzyżowa}
+\begin{table}[H]
+	\centering
+	\caption{Wyniki cross-walidacji.}
+	\label{tab:results_cross}
+	\begin{tabular}{|c|l|l|c|c|c|c|c|}
+	
+	\textbf{ID} & \textbf{Dataset} & \textbf{Model} & \textbf{Manual MAE} & \textbf{Sklearn MAE} & \textbf{Manual RMSE} & \textbf{Sklearn RMSE} & \textbf{\(R^2\)} \\ 
+	\hline
+0 & mean\_min\_max & LinearRegression & 0.028125 & 0.028125 & 0.042104 & 0.042104 & 0.964139 \\ \hline
+1 & mean\_min\_max & XGBoost & 0.024906 & 0.024907 & 0.037639 & 0.037616 & 0.971340 \\ \hline
+2 & mean\_min\_max & CatBoost & 0.024669 & 0.024676 & 0.037222 & 0.037232 & 0.971972 \\ \hline
+3 & mean\_min\_max & HistGradientBoosting & 0.025667 & 0.025650 & 0.038547 & 0.038553 & 0.969942 \\ \hline
+4 & mean\_min\_max & Voting Regressor & 0.065545 & 0.065536 & 0.083119 & 0.083114 & 0.860243 \\ \hline
+5 & mean\_min\_max & Stacking Regressor & 0.025653 & 0.025713 & 0.038502 & 0.038597 & 0.970012 \\ \hline
+6 & median\_min\_max & LinearRegression & 0.028125 & 0.028125 & 0.042104 & 0.042104 & 0.964139 \\ \hline
+7 & median\_min\_max & XGBoost & 0.024905 & 0.024896 & 0.037649 & 0.037621 & 0.971326 \\ \hline
+8 & median\_min\_max & CatBoost & 0.024665 & 0.024675 & 0.037220 & 0.037219 & 0.971975 \\ \hline
+9 & median\_min\_max & HistGradientBoosting & 0.025663 & 0.025659 & 0.038550 & 0.038560 & 0.969937 \\ \hline
+10 & median\_min\_max & Voting Regressor & 0.065539 & 0.065532 & 0.083112 & 0.083109 & 0.860266 \\ \hline
+11 & median\_min\_max & Stacking Regressor & 0.025650 & 0.025727 & 0.038506 & 0.038606 & 0.970005 \\ \hline
+12 & knn\_min\_max & LinearRegression & 0.028148 & 0.028148 & 0.042127 & 0.042127 & 0.964100 \\ \hline
+13 & knn\_min\_max & XGBoost & 0.024895 & 0.024905 & 0.037604 & 0.037613 & 0.971394 \\ \hline
+14 & knn\_min\_max & CatBoost & 0.024681 & 0.024678 & 0.037226 & 0.037219 & 0.971966 \\ \hline
+15 & knn\_min\_max & HistGradientBoosting & 0.025663 & 0.025663 & 0.038544 & 0.038555 & 0.969947 \\ \hline
+16 & knn\_min\_max & Voting Regressor & 0.065494 & 0.065490 & 0.083064 & 0.083063 & 0.860425 \\ \hline
+17 & knn\_min\_max & Stacking Regressor & 0.025647 & 0.025705 & 0.038498 & 0.038563 & 0.970019 \\ \hline
+18 & mean\_standard & LinearRegression & 0.126496 & 0.126496 & 0.189368 & 0.189368 & 0.964139 \\ \hline
+19 & mean\_standard & XGBoost & 0.111978 & 0.112011 & 0.169199 & 0.169189 & 0.971371 \\ \hline
+20 & mean\_standard & CatBoost & 0.110914 & 0.111003 & 0.167338 & 0.167466 & 0.971996 \\ \hline
+21 & mean\_standard & HistGradientBoosting & 0.115442 & 0.115366 & 0.173369 & 0.173398 & 0.969942 \\ \hline
+22 & mean\_standard & Voting Regressor & 0.220838 & 0.220809 & 0.287181 & 0.287173 & 0.917526 \\ \hline
+23 & mean\_standard & Stacking Regressor & 0.115399 & 0.115741 & 0.173163 & 0.173536 & 0.970014 \\ \hline
+24 & median\_standard & LinearRegression & 0.126496 & 0.126496 & 0.189368 & 0.189368 & 0.964139 \\ \hline
+25 & median\_standard & XGBoost & 0.112033 & 0.112007 & 0.169323 & 0.169222 & 0.971329 \\ \hline
+26 & median\_standard & CatBoost & 0.110947 & 0.110959 & 0.167407 & 0.167389 & 0.971973 \\ \hline
+27 & median\_standard & HistGradientBoosting & 0.115425 & 0.115407 & 0.173386 & 0.173428 & 0.969937 \\ \hline
+28 & median\_standard & Voting Regressor & 0.220815 & 0.220783 & 0.287153 & 0.287145 & 0.917542 \\ \hline
+29 & median\_standard & Stacking Regressor & 0.115386 & 0.115801 & 0.173185 & 0.173577 & 0.970006 \\ \hline
+30 & knn\_standard & LinearRegression & 0.126601 & 0.126601 & 0.189472 & 0.189472 & 0.964100 \\ \hline
+31 & knn\_standard & XGBoost & 0.111979 & 0.112037 & 0.169150 & 0.169213 & 0.971387 \\ \hline
+32 & knn\_standard & CatBoost & 0.110999 & 0.110999 & 0.167440 & 0.167424 & 0.971962 \\ \hline
+33 & knn\_standard & HistGradientBoosting & 0.115423 & 0.115400 & 0.173356 & 0.173384 & 0.969947 \\ \hline
+34 & knn\_standard & Voting Regressor & 0.220862 & 0.220841 & 0.287228 & 0.287216 & 0.917500 \\ \hline
+35 & knn\_standard & Stacking Regressor & 0.115369 & 0.115763 & 0.173144 & 0.173561 & 0.970020 \\ \hline
+\end{tabular}
+\end{table}
+\end{landscape}
+
+\newpage
+\subsubsection{Wnioski}
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=0.8\textwidth]{figures/porownanie_Błąd_MAE_dla_zbioru_mean_min_max.png}
+	\caption{Porównanie błędu MEA dla zbioru mean\_max\_min.}
+	\label{fig:mea2}
+\end{figure}
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=0.8\textwidth]{figures/porownanie_Błąd_MAE_dla_zbioru_mean_standard.png}
+	\caption{Porównanie błędu MEA dla zbioru mean\_standard.}
+	\label{fig:mea3}
+\end{figure}
+
+\newpage
+\begin{itemize}
+	\item XGBoost i CatBoost oraz HistGradientBoosting wykazują najlepsze wyniki w MAE, RMSE oraz \(R^2\), co sugeruje, że są one najbardziej odpowiednie dla analizowanych zbiorów danych.
+	\item Modele z normalizacją (\_min\_max) działają generalnie lepiej niż te z użyciem standaryzacji (\_standard), co może wynikać z charakteru danych.
+	\item Voting Regressor osiąga najsłabsze wyniki w każdym scenariuszu, co może sugerować, że średnia z modeli bazowych nie jest optymalna dla tych danych.
+	\item Różnice między wynikami obliczonymi manualnie i za pomocą Sklearn są minimalne, co potwierdza poprawność implementacji obliczeń manualnych.
+\end{itemize}
+
+\subsubsection{Wnioski z analizy}
+
+\begin{itemize}
+\item \textbf{CatBoost} i \textbf{XGBoost} oraz \textbf{ HistGradientBoostingRegressor} okazały się najskuteczniejszymi modelami, osiągając zarówno wysoką dokładność predykcji (niski MAE i RMSE), jak i akceptowalny czas trenowania. Wskazuje to na ich przydatność w zadaniach związanych z predykcją cen samochodów.
+\item Modele \textbf{Linear Regression} oraz \textbf{Random Forest} miały znaczące ograniczenia - pierwszy charakteryzował się niską dokładnością, a drugi wymagał znacznie dłuższego czasu obliczeniowego, co czyni go mniej praktycznym w zastosowaniach na dużych zbiorach danych.
+\item Analiza wskazała, że przetwarzanie danych za pomocą \textbf{min-max scaling} było bardziej efektywne niż standaryzacja, co podkreśla znaczenie odpowiedniego przygotowania danych w procesie modelowania.
+\end{itemize}
+
+\newpage
 \subsection{Optymalizacja}
+W wyniku otrzymanych rezultatów do optymalizacji zostanie wykorzystany model \textbf{Histogram-based Gradient Boosting Regressor} ze względu na czas działania i skuteczność. Wykorzystany zostanie zbiór \textbf{mean\_min\_max.csv}.
 
 \section{Podsumowanie}
 
