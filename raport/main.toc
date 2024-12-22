@@ -1,0 +1,45 @@
+\contentsline {section}{\numberline {1}Abstract}{3}{section.1}%
+\contentsline {section}{\numberline {2}Wprowadzenie}{3}{section.2}%
+\contentsline {section}{\numberline {3}Zbiór danych}{4}{section.3}%
+\contentsline {subsection}{\numberline {3.1}Wykres procentowej ilości brakujących wartości}{5}{subsection.3.1}%
+\contentsline {subsection}{\numberline {3.2}Histogramy}{5}{subsection.3.2}%
+\contentsline {subsection}{\numberline {3.3}Boxploty}{7}{subsection.3.3}%
+\contentsline {subsection}{\numberline {3.4}Pairplot}{10}{subsection.3.4}%
+\contentsline {subsection}{\numberline {3.5}Macierz korelacji}{11}{subsection.3.5}%
+\contentsline {subsection}{\numberline {3.6}Wykres sprzedaży samochodów - Cena, Przebieg i Stan pojazdu dla 1000 losowych próbek}{12}{subsection.3.6}%
+\contentsline {subsection}{\numberline {3.7}Wykres sprzedaży samochodów - Cena, Przebieg i Rok produkcji pojazdu dla 1000 losowych próbek}{12}{subsection.3.7}%
+\contentsline {subsection}{\numberline {3.8}Liczba sprzedanych pojazdów w poszczególnych stanach USA}{13}{subsection.3.8}%
+\contentsline {subsection}{\numberline {3.9}Top 10 najczęściej sprzedawanych marek samochodów}{13}{subsection.3.9}%
+\contentsline {subsection}{\numberline {3.10}Liczba sprzedanych pojazdów według roku produkcji}{14}{subsection.3.10}%
+\contentsline {subsection}{\numberline {3.11}Top 10 najlepiej sprzedających się typów nadwozia}{14}{subsection.3.11}%
+\contentsline {subsection}{\numberline {3.12}Top 10 kolorów z największą liczbą sprzedanych pojazdów}{15}{subsection.3.12}%
+\contentsline {section}{\numberline {4}Przegląd literatury}{15}{section.4}%
+\contentsline {section}{\numberline {5}Motywacja}{15}{section.5}%
+\contentsline {section}{\numberline {6}Ewaluacja}{16}{section.6}%
+\contentsline {section}{\numberline {7}Zasoby}{16}{section.7}%
+\contentsline {section}{\numberline {8}Zastosowane metody}{16}{section.8}%
+\contentsline {section}{\numberline {9}Eksperyment}{17}{section.9}%
+\contentsline {subsection}{\numberline {9.1}Preprocessing}{17}{subsection.9.1}%
+\contentsline {paragraph}{1. Obliczenie wieku samochodu (\texttt {car\_age})}{17}{section*.2}%
+\contentsline {paragraph}{2. Ekstrakcja informacji z numeru VIN}{17}{section*.3}%
+\contentsline {paragraph}{3. Usunięcie wartości odstających}{17}{section*.4}%
+\contentsline {paragraph}{4. Przekształcenie zmiennych kategorycznych na wartości liczbowe}{17}{section*.5}%
+\contentsline {paragraph}{5. Sprawdzenie brakujących wartości}{17}{section*.6}%
+\contentsline {paragraph}{6. Uzupełnianie brakujących wartości}{18}{section*.7}%
+\contentsline {paragraph}{7. Skalowanie i standaryzacja danych}{18}{section*.8}%
+\contentsline {paragraph}{8. Zapis przetworzonych danych}{18}{section*.9}%
+\contentsline {subsection}{\numberline {9.2}Trening modelu}{18}{subsection.9.2}%
+\contentsline {subsubsection}{\numberline {9.2.1}Podział danych na zbiory treningowe i testowe}{18}{subsubsection.9.2.1}%
+\contentsline {subsubsection}{\numberline {9.2.2}Proces treningu modeli}{19}{subsubsection.9.2.2}%
+\contentsline {subsubsection}{\numberline {9.2.3}Modele wykorzystane do analizy}{20}{subsubsection.9.2.3}%
+\contentsline {subsubsection}{\numberline {9.2.4}Wyniki eksperymentów}{20}{subsubsection.9.2.4}%
+\contentsline {subsubsection}{\numberline {9.2.5}Porównanie wyników na wykresach}{22}{subsubsection.9.2.5}%
+\contentsline {subsubsection}{\numberline {9.2.6}Walidacja krzyżowa}{24}{subsubsection.9.2.6}%
+\contentsline {subsubsection}{\numberline {9.2.7}Wnioski}{25}{subsubsection.9.2.7}%
+\contentsline {subsubsection}{\numberline {9.2.8}Wnioski z analizy}{26}{subsubsection.9.2.8}%
+\contentsline {subsection}{\numberline {9.3}Optymalizacja}{27}{subsection.9.3}%
+\contentsline {subsubsection}{\numberline {9.3.1}Optymalizacja cech}{27}{subsubsection.9.3.1}%
+\contentsline {subsubsection}{\numberline {9.3.2}Porównanie metod optymalizacji}{29}{subsubsection.9.3.2}%
+\contentsline {subsubsection}{\numberline {9.3.3}Wyniki optymalizacji cech}{29}{subsubsection.9.3.3}%
+\contentsline {subsubsection}{\numberline {9.3.4}Optymalizacja hiperparametrów}{29}{subsubsection.9.3.4}%
+\contentsline {section}{\numberline {10}Podsumowanie}{31}{section.10}%

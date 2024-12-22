@@ -60,8 +60,14 @@ Rafał Matusiak\\
 \maketitle
 %\thispagestyle{empty}
 
+\tableofcontents 
+
+\newpage
 \section{Abstract}
+W niniejszym projekcie zaprezentowano podejście do przewidywania cen samochodów używanych na podstawie historycznych danych aukcyjnych. Celem projektu jest zbudowanie modelu predykcyjnego, który na podstawie cech samochodów (takich jak marka, model, rok produkcji, stan techniczny, przebieg, itd.) prognozuje cenę sprzedaży pojazdu. Zastosowano kilka popularnych algorytmów uczenia maszynowego, takich jak regresja liniowa, lasy losowe, XGBoost oraz CatBoost. Dodatkowo, przeprowadzono optymalizację cech (RFE, PSO, Algorytmy Genetyczne) i hiperparametrów (GridSearchCV, RandomizedSearchCV, Optuna, Algorytmy Genetyczne). Projekt ma na celu rozwijanie umiejętności analizy danych oraz budowy modeli predykcyjnych.
+
 \section{Wprowadzenie}
+Przewidywanie cen samochodów na rynku wtórnym może przynieść korzyści zarówno kupującym, jak i sprzedającym, zapewniając obie strony bardziej przejrzystymi oraz sprawiedliwymi transakcjami. Dodatkowo, modele predykcyjne mogą wspomagać dealerów samochodowych, wypożyczalnie oraz platformy aukcyjne w dokładniejszej wycenie pojazdów, co pozwala na optymalizację procesów sprzedażowych. W ramach tego projektu, celem jest zbudowanie modelu przewidującego cenę samochodów na aukcjach na podstawie dostępnych danych.
 
 \newpage
 \section{Zbiór danych}
@@ -267,13 +273,14 @@ Kolory takie jak czarny, biały i srebrny są najczęściej wybierane przez naby
 \section{Przegląd literatury}
 Zbiór nie był wykorzystywany w publikacjach. Dostepne jest kilka notatników z przykładowymi podejścami do problemu. 
 \begin{itemize}
-    \item Notatnik Kaggle autorstwa Zabihullaha18 dotyczy predykcji cen samochodów za pomocą uczenia maszynowego. Zawiera kroki takie jak wstępne przetwarzanie danych, wybór cech i trenowanie modeli. Używa algorytmu regresji liniowej do przewidywania cen na podstawie danych o samochodach (np. marka, model, przebieg). Wyniki są oceniane przy użyciu wskaźników takich jak błąd średniokwadratowy, który pozwala mierzyć dokładność prognoz. Pelen notatnik dostępny jest pod adresem: \url{https://www.kaggle.com/code/zabihullah18/car-price-prediction#--5)-Train-the-Model-}
-    \item Notatnik na Kaggle dotyczący predykcji cen używanych samochodów autorstwa Midoel3ila wykorzystuje techniki uczenia maszynowego do przewidywania cen samochodów na podstawie ich cech. Proces obejmuje wstępne przetwarzanie danych, eksplorację cech takich jak marka, model, przebieg i wiek pojazdu, a następnie budowanie modeli predykcyjnych. Algorytmy takie jak regresja liniowa i lasy losowe są stosowane do trenowania modelu. Notatnik ocenia dokładność przewidywań za pomocą miar takich jak błąd średniokwadratowy. Pelen notatnik dostępny jest pod adresem: \url{https://www.kaggle.com/code/midoel3ila/car-used-priced-prediction-using-ml}  
+	\item Notatnik Kaggle \cite{zabihullah18} autorstwa Zabihullaha18 dotyczy predykcji cen samochodów za pomocą uczenia maszynowego. Zawiera kroki takie jak wstępne przetwarzanie danych, wybór cech i trenowanie modeli. Używa algorytmu regresji liniowej do przewidywania cen na podstawie danych o samochodach (np. marka, model, przebieg). Wyniki są oceniane przy użyciu wskaźników takich jak błąd średniokwadratowy, który pozwala mierzyć dokładność prognoz.
+	\item Notatnik na Kaggle \cite{midoel3ila2024} dotyczący predykcji cen używanych samochodów autorstwa Midoel3ila wykorzystuje techniki uczenia maszynowego do przewidywania cen samochodów na podstawie ich cech. Proces obejmuje wstępne przetwarzanie danych, eksplorację cech takich jak marka, model, przebieg i wiek pojazdu, a następnie budowanie modeli predykcyjnych. Algorytmy takie jak regresja liniowa i lasy losowe są stosowane do trenowania modelu. Notatnik ocenia dokładność przewidywań za pomocą miar takich jak błąd średniokwadratowy.
 \end{itemize}
 
 \section{Motywacja}
 Projekt dotyczący prognozowania cen samochodów używanych jest interesujący, ponieważ może przynieść korzyści zarówno kupującym, jak i sprzedającym, pomagając przewidzieć realistyczne ceny rynkowe. W społeczeństwie, gdzie kupno używanych pojazdów jest powszechne, dokładne modele predykcyjne mogą wspierać transparentność i zaufanie w transakcjach. W przemyśle, takie prognozy mogą być użyteczne dla wypożyczalni samochodów, dealerów oraz platform aukcyjnych, pomagając w lepszym oszacowaniu wartości pojazdów i optymalizacji strategii sprzedaży.
 
+\newpage
 \section{Ewaluacja}
 Oczekiwany model będzie w stanie dokładnie przewidzieć ceny samochodów używanych na aukcjach na podstawie dostępnych danych. Satysfakcjonujący wynik to taki, w którym błąd predykcji (np. błąd średniokwadratowy) będzie niski, co oznacza, że przewidywane ceny są bliskie rzeczywistym cenom sprzedaży. Osiągniety wynik, powinien być wystarczająco precyzyjny, aby umożliwić zastosowanie modelu w rzeczywistych warunkach — np. na platformach aukcyjnych lub w firmach dealerskich — gdzie może pomóc w wycenie pojazdów. Oczywiście projekt ma charakter wyłącznie edukacyjny i nie jest przeznaczony do komercyjnego wykorzystania ani sprzedaży. Celem jest nauka i zrozumienie metod prognozowania cen samochodów używanych z wykorzystaniem modeli uczenia maszynowego. Chociaż dążymy do uzyskania dokładnych wyników, system ten nie będzie wdrażany w żadnym rzeczywistym środowisku komercyjnym. Skupiamy się na poszerzaniu wiedzy i umiejętności w zakresie analizy danych oraz budowania modeli predykcyjnych.
 
@@ -281,6 +288,23 @@ Oczekiwany model będzie w stanie dokładnie przewidzieć ceny samochodów używ
 W projekcie zostanie wykorzystany język programowania Python oraz środowisko Jupyter Notebook do analizy danych i budowy modeli predykcyjnych. Python oferuje bogaty zestaw bibliotek do uczenia maszynowego, takich jak scikit-learn do budowy i oceny modeli, pandas do manipulacji danymi, oraz numpy do obliczeń numerycznych. Dodatkowo, zosatnie wykorzystana biblioteka matplotlib i seaborn do wizualizacji danych, co pozwoli na lepsze zrozumienie zależności i wzorców w zebranych informacjach.
 
 \section{Zastosowane metody}
+Do analizy i budowy modelu predykcyjnego zastosowano szereg popularnych metod uczenia maszynowego, w tym:
+
+Regresja liniowa – metoda wykorzystywana do szacowania zależności między zmiennymi. Jest to podstawowy model regresyjny, który może służyć jako punkt odniesienia.
+
+Lasy losowe – ensemble learning method, który wykorzystuje zestaw drzew decyzyjnych, gdzie każdy z nich uczy się na losowej próbce danych.
+
+Histogram-based Gradient Boosting Regressor – algorytm oparty na metodzie gradient boosting, szczególnie przydatny przy pracy z dużymi zbiorami danych.
+
+XGBoost – jeden z najpopularniejszych algorytmów w zakresie boostingu, znany ze swojej efektywności i szybkości działania, szczególnie w przypadku dużych zbiorów danych.
+
+CatBoost – metoda gradient boosting opracowana z myślą o automatyzacji obsługi zmiennych kategorycznych, co czyni ją szczególnie skuteczną w tego rodzaju zadaniach.
+
+Voting Regressor – metoda łączenia wyników z kilku różnych modeli, przy czym finalna prognoza jest średnią z prognoz wszystkich modeli.
+
+Ponadto, przeprowadzono optymalizację hiperparametrów oraz cech w celu uzyskania jak najlepszych wyników z tych algorytmów. 
+
+\newpage
 \section{Eksperyment}
 \subsection{Preprocessing}
 
@@ -598,7 +622,186 @@ W walidacji krzyżowej nie został użyty model Random Forest za względu na bar
 \subsection{Optymalizacja}
 W wyniku otrzymanych rezultatów do optymalizacji zostanie wykorzystany model \textbf{Histogram-based Gradient Boosting Regressor} ze względu na czas działania i skuteczność. Wykorzystany zostanie zbiór \textbf{mean\_min\_max.csv}.
 
-\section{Podsumowanie}
+\subsubsection{Optymalizacja cech}
+
+Na tym etapie projektu przeprowadzono optymalizację cech, aby zredukować liczbę zmiennych wejściowych i poprawić efektywność modelowania. Wykorzystano następujące metody:
+
+\begin{enumerate}
+	\item \textbf{Macierz korelacji}\\
+	Na podstawie macierzy korelacji:
+	\begin{itemize}
+		\item Odrzucono cechy o niskiej korelacji. Próg korelacji ustalono na wartość 0.1. Cechy, dla których wartości korelacji bezwzględnej były mniejsze niż 0.1, zostały usunięte.
+		\item Dodatkowo, aby sztucznie obniżyć jakość uzyskanych modeli przed optymalizacją hiperparamterów, usunięto kilka wysoko skorelowanych zmiennych. Były to: \texttt{car\_age}, \texttt{odometer}, \texttt{sale\_year}, \texttt{condition}, \texttt{mmr}, \texttt{sale\_month}.
+	\end{itemize}
+	Końcowo zredukowany zbór cech przedstawiono na Rysunku \ref{fig:reduced_correlation_matrix} przedstawiającym macierz korelacji po odrzuceniu nadmiarowych cech.
+	
+	\begin{figure}[H]
+		\centering
+		\includegraphics[width=0.8\textwidth]{figures/reduced_correlation_matrix.png}
+		\caption{Macierz korelacji po odrzuceniu nadmiarowych cech.}
+		\label{fig:reduced_correlation_matrix}
+	\end{figure}
+	
+	\item \textbf{Recursive Feature Elimination (RFE)}\\
+	W celu dalszej optymalizacji cech zastosowano algorytm Recursive Feature Elimination (RFE). Jako model bazowy wybrano regresję liniową (\texttt{LinearRegression}). Algorytm iteracyjnie analizował cechy, jednak żadna z nich nie została usunięta, co wskazuje na ich wysoką wartość predykcyjną.
+	\begin{itemize}
+		\item \textbf{Wynik:} Wszystkie cechy zostały zachowane: 
+		\texttt{year}, \texttt{make}, \texttt{model}, \texttt{trim}, \texttt{body}, \texttt{state}, \texttt{interior}, \texttt{seller}, \texttt{sale\_hour}, \texttt{sale\_minute}, \texttt{sale\_weekday}.
+	\end{itemize}
+	
+	\begin{figure}[H]
+		\centering
+		\includegraphics[width=0.8\textwidth]{figures/mse_rfe_crossval_plot.png}
+		\caption{Wykres MSE dla różnych liczby cech (RFE z cross-walidacją).}
+		\label{fig:mse_rfe_crossval_plot}
+	\end{figure}
+	
+	\item \textbf{Algorytmy zaawansowane - Particle Swarm Optimization (PSO)}\\
+	Aby uzyskać ocenę metod bardziej zaawansowanych i osiągnąć potencjalnie wyższą ocenę, wdrożono optymalizację za pomocą Particle Swarm Optimization (PSO). Funkcja celu maksymalizowała skuteczność modelu Histogram-based Gradient Boosting Regressor na podstawie cross-walidacji z jednoczesnym uwzględnieniem kary za liczbę cech.
+	\begin{itemize}
+		\item \textbf{Wynik:} Algorytm PSO zidentyfikował jedną kluczową cechę - \texttt{year}
+	\end{itemize}
+	
+	\item \textbf{Genetic Algorithm (GA)}\\
+	Przeprowadzono optymalizację cech za pomocą Genetic Algorithm (GA). Algorytm poszukiwał optymalnego podzbioru cech, minimalizując błąd średniokwadratowy (MSE) modelu Histogram-based Gradient Boosting Regressor z uwzględnieniem kary za liczbę cech.
+	\begin{itemize}
+		\item W każdej generacji selekcjonowano najlepsze osobniki metodą turniejową, krzyżowano je jednopunktowo, a następnie wprowadzano mutacje z prawdopodobieństwem 0.1.
+		\item \textbf{Wynik:} Wybrane cechy to \texttt{year}, \texttt{state}, \texttt{interior}. Finalne wyniki z kolejnych generacji wskazywały stabilizację funkcji celu, co sugeruje skuteczne poszukiwanie optymalnego zestawu cech.
+	\end{itemize}
+	
+	\item \textbf{Feature Importance - Extra Trees Regressor}\\
+	Przeprowadzono ranking ważności cech z wykorzystaniem modelu Extra Trees Regressor. Progiem ważności uznano 0.01, odrzucając cechy mniej istotne. Algorytm analizował wszystkie cechy, jednak żadna z nich nie została usunięta, co wskazuje na ich wartość predykcyjną.
+\end{enumerate}
+	
+	\subsubsection{Porównanie metod optymalizacji}
+	Przeprowadzono porównanie wyników z wykorzystaniem wybranych metod optymalizacji na zbiorze walidacyjnym:
+	\begin{table}[H]
+		\centering
+		\begin{tabular}{lcccc}
+			\hline
+			\textbf{Metoda} & \textbf{MAE} & \textbf{MSE} & \textbf{RMSE} & \textbf{$R^2$} \\
+			\hline
+			RFE & 0.061844 & 0.007450 & 0.086312 & 0.848586 \\
+			PSO & 0.132992 & 0.028499 & 0.168818 & 0.420765 \\
+			Extra Trees & 0.061844 & 0.007450 & 0.086312 & 0.848586 \\
+			Genetic Algorithm & 0.127318 & 0.020533 & 0.162891 & 0.460724 \\
+			\hline
+		\end{tabular}
+		\caption{Porównanie wyników metod optymalizacji cech.}
+		\label{tab:optimization_results}
+	\end{table}
+	
+	Najlepszy wynik osiągnęła metoda \textbf{RFE}, minimalizując wartości MAE i RMSE, co wskazuje na jej skuteczność w zadaniu optymalizacji cech.
+	
+	\subsubsection{Wyniki optymalizacji cech}
+	Na podstawie przeprowadzonych analiz wybrano zbór cech do dalszego modelowania, ograniczając go do zmiennych:
+	\begin{itemize}
+		\item \texttt{year}
+		\item \texttt{make}
+		\item \texttt{model}
+		\item \texttt{trim}
+		\item \texttt{body}
+		\item \texttt{state}
+		\item \texttt{interior}
+		\item \texttt{seller}
+		\item \texttt{sale\_hour}
+		\item \texttt{sale\_minute}
+		\item \texttt{sale\_weekday}
+	\end{itemize}
+	
+	
+	\subsubsection{Optymalizacja hiperparametrów}
+	W każdej metodzie uwzględniono wartości domyślne dla modelu HistGradientBoosting.
+	
+	\textbf{Model Bazowy:} 
+	\begin{itemize}
+		\item Mean Squared Error: 0.0070
+		\item R²: 0.8572
+	\end{itemize}
+	
+	\textbf{GridSearchCV:} 
+	\begin{itemize}
+		\item Mean Squared Error (Testowy): 0.0046
+		\item R² (Testowy): 0.9063
+		\item Najlepsze Hiperparametry: $\{ 'l2\_regularization': 0.0, 'learning\_rate': 0.2, 'max\_depth': None, 'max\_iter': 300, 'min\_samples\_leaf': 20 \}$
+	\end{itemize}
+	
+	\textbf{RandomizedSearchCV:} 
+	\begin{itemize}
+		\item Mean Squared Error (Testowy): 0.0046
+		\item R² (Testowy): 0.9061
+		\item Najlepsze Hiperparametry: $\{ 'min\_samples\_leaf': 50, 'max\_iter': 300, 'max\_depth': None, 'learning\_rate': 0.2, 'l2\_regularization': 0.0 \}$
+	\end{itemize}
+	
+	\textbf{Optuna:} 
+	\begin{itemize}
+		\item Mean Squared Error (Testowy): 0.0042
+		\item R² (Testowy): 0.9151
+		\item Najlepsze Hiperparametry: $\{ 'learning\_rate': 0.2930895840551921, 'max\_iter': 487, 'max\_depth': None, 'min\_samples\_leaf': 20, 'l2\_regularization': 3.941533331112236 \}$
+	\end{itemize}
+	
+	\textbf{Algorytm Genetyczny:} 
+	\begin{itemize}
+		\item Mean Squared Error (Testowy): 0.0043
+		\item R² (Testowy): 0.9130
+		\item Najlepsze Hiperparametry: $\{ 'learning\_rate': 0.29080400772472587, 'max\_iter': 497, 'max\_depth': 6, 'min\_samples\_leaf': 34, 'l2\_regularization': 2.30621555056688 \}$
+	\end{itemize}
+	
+	Z porównania różnych metod optymalizacji hiperparametrów, widać, że najlepsze wyniki uzyskano przy użyciu Optuna. Osiągnięto najniższy błąd średniokwadratowy (Mean Squared Error) na poziomie 0.0042 oraz najwyższy współczynnik determinacji (R²) równy 0.9151. 
+	
+	Metody GridSearchCV i RandomizedSearchCV osiągnęły zbliżone wyniki, z wartościami MSE na poziomie 0.0046 i R² odpowiednio 0.9063 i 0.9061. Różnice te wskazują na wysoką efektywność obu metod, choć Optuna daje lepsze rezultaty.
+	
+	Algorytm genetyczny uzyskał wartości MSE na poziomie 0.0043 oraz R² równy 0.9130, co również jest bardzo bliskie wynikowi Optuna, choć z nieco gorszymi hiperparametrami. Był także najbardziej czasochłonną metodą - zarówno przy implemetacji jak i wykonaniu.
+	
+	Optuna okazała się najlepszą metodą w kontekście uzyskanych wyników, jednak inne podejścia, takie jak GridSearchCV i RandomizedSearchCV, również dają bardzo dobre rezultaty (a są prostsze w implementacji) i mogą być odpowiednie w różnych sytuacjach zależnych od wymagań czasowych i obliczeniowych.
+	
+	\newpage
+	\section{Podsumowanie}
+	
+	W ramach projektu przeprowadzono kompleksową analizę i predykcję cen samochodów używanych na podstawie danych historycznych z aukcji. Główne etapy projektu obejmowały przygotowanie danych, wybór cech, budowę modeli predykcyjnych, optymalizację cech oraz optymalizację hiperparametrów.
+	
+	\subsection*{Przygotowanie danych}
+	Etap wstępnego przetwarzania danych był kluczowy dla zapewnienia spójności i jakości zbioru danych. Wykonano następujące kroki:
+	\begin{itemize}
+		\item Obliczono wiek samochodów oraz wyodrębniono dodatkowe cechy (np. godzina, minuta i dzień tygodnia sprzedaży) na podstawie daty sprzedaży.
+		\item Usunięto wartości odstające metodą IQR, co pozwoliło na wyeliminowanie około 8,3\% danych.
+		\item Zmieniono zmienne kategoryczne na wartości liczbowe za pomocą kodowania etykiet (label encoding), co umożliwiło skuteczne wykorzystanie modeli predykcyjnych.
+		\item Zastosowano imputację brakujących danych trzema metodami: średnią, medianą oraz k-Nearest Neighbors.
+		\item Przeprowadzono skalowanie i standaryzację danych, tworząc różne zestawy przetworzonych danych (min-max scaling, standard scaling).
+	\end{itemize}
+	
+	\subsection*{Modelowanie i ocena}
+	Do modelowania wykorzystano różnorodne algorytmy regresji, takie jak:
+	\begin{itemize}
+		\item \textbf{CatBoost Regressor}, który osiągnął najlepsze wyniki pod względem MAE, RMSE i współczynnika determinacji $R^2$, jednocześnie utrzymując stosunkowo krótki czas trenowania.
+		\item \textbf{XGBoost Regressor}, który oferował wyniki porównywalne z CatBoostem, ale z nieco szybszym czasem trenowania.
+		\item Modele takie jak \textbf{Random Forest} i \textbf{Linear Regression} wykazały swoje ograniczenia — pierwszy wymagał dużego czasu obliczeniowego, a drugi charakteryzował się niską dokładnością.
+		\item \textbf{Voting Regressor} okazał się najmniej skuteczny, co wskazuje na ograniczenia metod ensemble w tym przypadku.
+	\end{itemize}
+	Podsumowując wyniki, przetwarzanie danych za pomocą skalowania min-max wykazało większą efektywność niż standaryzacja, co uwypukla znaczenie odpowiedniego przygotowania danych w procesie modelowania.
+	
+	\subsection*{Optymalizacja cech}
+	W celu redukcji wymiarowości danych zastosowano różnorodne techniki optymalizacji cech:
+	\begin{itemize}
+		\item Algorytm \textbf{Recursive Feature Elimination (RFE)} nie wykluczył żadnej cechy, co wskazuje na wysoką wartość predykcyjną wszystkich zmiennych.
+		\item Algorytm \textbf{Extra Trees Regressor} również nie wykluczył żadnej cechy, uzyskując wyniki identyczne do RFE, co wskazuje na spójność między tymi metodami.
+		\item \textbf{Particle Swarm Optimization (PSO)} oraz \textbf{Genetic Algorithm (GA)} osiągnęły podobne wyniki, identyfikując ograniczoną liczbę kluczowych cech (np. \texttt{year}), jednak ich skuteczność była niższa w porównaniu do metod RFE i Extra Trees Regressor.
+	\end{itemize}
+	Optymalizacja cech pozwoliła na zachowanie kluczowych zmiennych bez utraty jakości modelowania.
+	
+	\subsection*{Optymalizacja hiperparametrów}
+	W ramach optymalizacji hiperparametrów zastosowano cztery różne metody:
+	\begin{itemize}
+		\item \textbf{GridSearchCV} oraz \textbf{RandomizedSearchCV}, które osiągnęły porównywalne wyniki (MSE na poziomie 0.0046 i $R^2$ na poziomie 0.9063).
+		\item \textbf{Optuna} okazała się najskuteczniejsza, uzyskując najniższe MSE na poziomie 0.0042 oraz najwyższy współczynnik determinacji $R^2$ równy 0.9151.
+		\item \textbf{Algorytm Genetyczny} dostarczył wyniki zbliżone do Optuny (MSE: 0.0043, $R^2$: 0.9130), jednak charakteryzował się większą złożonością obliczeniową.
+	\end{itemize}
+	Optymalizacja hiperparametrów znacząco poprawiła wydajność modeli, a Optuna została uznana za najlepszą metodę w kontekście uzyskanych wyników i efektywności obliczeniowej.
+	
+	\subsection*{Wnioski i rekomendacje}
+	Wyniki projektu wskazują, że najlepsze modele predykcyjne to CatBoost i XGBoost, które charakteryzują się wysoką dokładnością i krótkim czasem trenowania. Optymalizacja cech, szczególnie za pomocą RFE i Extra Trees Regressor, dostarczyła najbardziej wartościowych wyników, wskazując na istotność wszystkich cech w predykcji. Ostateczny model wykorzystał Histogram-based Gradient Boosting Regressor, który oferuje równowagę między dokładnością a wydajnością obliczeniową.
+	
+	Projekt dostarczył cennych informacji na temat metod predykcji cen samochodów używanych i możliwości ich zastosowania w praktyce. W przyszłości warto rozważyć integrację bardziej zaawansowanych metod optymalizacji oraz uwzględnienie dynamicznych danych rynkowych dla dalszej poprawy dokładności modeli.
 
 \bibliographystyle{plain}
 \bibliography{bibliography.bib} 
